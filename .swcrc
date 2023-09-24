@@ -32,6 +32,8 @@
       "@services/*": ["services/*"],
       "@utils/*": ["utils/*"],
       "@database/*": ["database/*"],
+      "@entity/*": ["database/entity/*"],
+      "@repository/*": ["database/repository/*"],
       "@constants": ["constants"],
       "@MockedData/*": ["MockedData/*"]
     }
