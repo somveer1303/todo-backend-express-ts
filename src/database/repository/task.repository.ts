@@ -44,10 +44,14 @@ export class TaskRepository {
     }
   }
 
-  async getAllTasksForUser(userId: number): Promise<Task[]> {
+  async getAllTasksForUser(userId: string): Promise<Task[]> {
     try {
-      return await this.taskRepository.createQueryBuilder('task').where('task.user_id = :userId', { userId }).getMany();
+      return await this.taskRepository
+        .createQueryBuilder('tasks')
+        .where('tasks.user_id = :userId', { userId })
+        .getMany();
     } catch (error) {
+      console.error(error);
       throw new Error(`Unable to fetch tasks for user: ${error.message}`);
     }
   }
