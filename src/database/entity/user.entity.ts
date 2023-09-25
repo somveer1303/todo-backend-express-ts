@@ -1,5 +1,4 @@
-import { Entity, Column, OneToMany, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Task } from './task.entity';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from './base.entity';
 
 @Entity('users')
@@ -18,7 +17,4 @@ export class User extends BaseEntity {
 
   @Column()
   phone: string;
-
-  @OneToMany(() => Task, task => task.user)
-  tasks: Task[];
 }

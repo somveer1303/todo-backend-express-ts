@@ -1,17 +1,9 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Generated,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Generated } from 'typeorm';
 import { User } from './user.entity';
+import { BaseEntity } from './base.entity';
 
 @Entity('tasks')
-export class Task {
+export class Task extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Generated('uuid')
   id: string;
@@ -19,22 +11,15 @@ export class Task {
   @Column()
   title: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ nullable: true })
-  dueDate: Date;
-
-  @Column()
+  @Column({ type: 'enum', enum: ['done', 'pending', 'cancelled'], default: 'pending' })
   status: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
-  createdAt: Date;
+  @Column({ type: 'enum', enum: ['low', 'medium', 'high'], default: 'medium' })
+  priority: string;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
-  updatedAt: Date;
-
-  @ManyToOne(() => User, user => user.tasks)
-  @JoinColumn({ name: 'id' })
-  user: User;
+  @Column({ name: 'user_id', nullable: false })
+  userId: string;
 }
