@@ -5,6 +5,7 @@ import { userSignInSchemaZ, userSignUpSchemaZ } from '@dtos/auth.dtos';
 import { UserUpdateSchemaZ, UserIdSchemaZ } from '@dtos/users.dtos';
 
 import { validateRequestBody, validateRequestParams } from '@middlewares/validation.middleware';
+import { authMiddleware } from '@middlewares/auth.middleware';
 
 class UserRoute implements Routes {
   public path = '/user';
@@ -15,15 +16,11 @@ class UserRoute implements Routes {
     this.initializeRoutes();
   }
   private initializeRoutes() {
-    this.router.get(
-      `${this.path}/:id`,
-      //  validateRequestParams(UserIdSchemaZ),
-      this.usersController.getUserById,
-    );
+    this.router.get(`${this.path}/:id`, authMiddleware, this.usersController.getUserById);
     this.router.put(
       `${this.path}/:id`,
+      authMiddleware,
       validateRequestBody(UserUpdateSchemaZ),
-      // validateRequestParams(UserIdSchemaZ),
       this.usersController.updateUser,
     );
   }
