@@ -40,7 +40,7 @@ class UsersController {
 
       const response = await this.userService.updateUser(userId, userData);
       if (response.ok) {
-        return res.success({ code: 201, data: {} });
+        return res.success({ code: 201, data: response.data });
       }
 
       return res.failure({ msg: response.err });

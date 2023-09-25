@@ -66,11 +66,11 @@ class UserService {
 
   public async updateUser(userId: string, userData: ISignUpUser): Promise<IServiceResponse> {
     try {
-      const user = await this.usersRepository.getUserByEmail(userData.email);
+      let user = await this.usersRepository.getUserById(userId);
       if (!user) {
         return {
           ok: false,
-          err: `This email ${userData.email} not exists`,
+          err: `This userId ${userId} not exists`,
         };
       }
 
@@ -85,9 +85,11 @@ class UserService {
       if (userData.name) newUserData.name = userData.name;
 
       await this.usersRepository.updateUser(newUserData);
+      user = await this.usersRepository.getUserById(userId);
+      delete user.password;
       return {
         ok: true,
-        data: {},
+        data: user,
       };
     } catch (error) {
       throw error;
