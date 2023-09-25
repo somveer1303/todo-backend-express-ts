@@ -26,7 +26,7 @@ export default (req: Request, res: CustomResponse, next: NextFunction) => {
     isEncryption = true;
   }
   res.invalid = ({ msg, code = 400 }) => {
-    const responseData = sendResponse({ ok: false, err: msg || 'Invalid Parameters', code, data: null }, isEncryption);
+    const responseData = sendResponse({ ok: false, err: msg || 'Invalid Parameters', data: null }, isEncryption);
     res.resBody = responseData;
     return res.status(code).json(responseData);
   };
@@ -36,7 +36,6 @@ export default (req: Request, res: CustomResponse, next: NextFunction) => {
       {
         ok: false,
         err: msg || "Something is wrong! We're looking into it.",
-        code,
         data: null,
       },
       isEncryption,
@@ -53,11 +52,11 @@ export default (req: Request, res: CustomResponse, next: NextFunction) => {
     return res.status(401).json(responseData);
   };
 
-  res.success = ({ data = {} }) => {
+  res.success = ({ data = {}, code = 200 }) => {
     const responseData = sendResponse({ ok: true, err: null, data }, isEncryption);
     res.resBody = responseData;
 
-    return res.status(200).json(responseData);
+    return res.status(code).json(responseData);
   };
 
   res.sendEncryptedData = ({ data, code = 200 }) => {

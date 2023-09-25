@@ -1,16 +1,52 @@
-import { NextFunction, Request, Response } from 'express';
-import userService from '@services/users.service';
+import { Request } from 'express';
+import { ISignInUser, ISignUpUser, IUpdateUserRequest } from '@interfaces/users.interface';
+import { CustomResponse } from '@interfaces/response.interface';
+import userService from '@services/auth.service';
+import { logger } from '@/utils/logger.utils';
+import UserService from '@services/users.service';
 
 class UsersController {
-  public userService = new userService();
+  public userService = new UserService();
 
-  public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getUserById = async (req: Request, res: CustomResponse) => {
     try {
-      // const findAllUsersData: User[] = await this.userService.findAllUser();
+      const userId: string = req.params.id;
+      if (!userId) {
+        return res.invalid({ msg: 'userId is missing' });
+      }
 
-      res.status(200).json({ data: {}, message: 'findAll' });
+      const response = await this.userService.findUserById(userId);
+      if (response.ok) {
+        return res.success({ code: 201, data: response.data });
+      }
+
+      return res.failure({ msg: response.err });
     } catch (error) {
-      next(error);
+      logger.error(error.stack);
+      return res.failure({ code: 500 });
+    }
+  };
+
+  public updateUser = async (req: Request, res: CustomResponse) => {
+    try {
+      const userData: IUpdateUserRequest = req.body;
+      const userId: string = req.params.id;
+
+      if (!userId) {
+        return res.invalid({ msg: 'userId is missing' });
+      }
+
+      console.log(userId);
+
+      const response = await this.userService.updateUser(userId, userData);
+      if (response.ok) {
+        return res.success({ code: 201, data: {} });
+      }
+
+      return res.failure({ msg: response.err });
+    } catch (error) {
+      logger.error(error.stack);
+      return res.failure({ code: 500 });
     }
   };
 }
