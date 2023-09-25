@@ -28,25 +28,22 @@ export const authMiddleware = async (req: RequestWithUser, res: CustomResponse, 
     const Authorization =
       req.cookies['Authorization'] ||
       (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
-
     if (Authorization) {
       const secretKey: string = config.internalAccessToken;
       const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
-
       const userId = verificationResponse._id;
       const userRes = await userService.findUserById(userId);
       if (userRes.ok) {
-        req.user = userRes.data;
-        context.addUserToContext(userRes);
+        context.addUserToContext(userRes.data);
         next();
       } else {
         return res.failure({ code: 401, msg: 'Wrong authentication token' });
       }
     } else {
-      next(new HttpException(404, 'Authentication token missing'));
       return res.failure({ code: 404, msg: 'Authentication token missing' });
     }
   } catch (error) {
+    logger.error(error.stack);
     return res.failure({ code: 401, msg: 'Wrong authentication token' });
   }
 };

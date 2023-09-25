@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import UserController from '@/controllers/users.controller';
 import { Routes } from '@interfaces/routes.interface';
-import { userSignInSchemaZ, userSignUpSchemaZ } from '@dtos/auth.dtos';
 import { UserUpdateSchemaZ, UserIdSchemaZ } from '@dtos/users.dtos';
 
 import { validateRequestBody, validateRequestParams } from '@middlewares/validation.middleware';
