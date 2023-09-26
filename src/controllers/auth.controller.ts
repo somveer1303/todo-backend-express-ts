@@ -12,7 +12,7 @@ class AuthController {
       const userData: ISignUpUser = req.body;
       const response = await this.authService.signup(userData);
       if (response.ok) {
-        return res.success({ code: 201, data: {} });
+        return res.success({ code: 201, data: response.data });
       }
 
       return res.failure({ msg: response.err });
@@ -29,8 +29,9 @@ class AuthController {
 
       if (response.ok) {
         res.setHeader('Set-Cookie', [response.data.cookie]);
+        const token = response.data.cookie;
         delete response.data.cookie;
-        return res.success({ data: response.data });
+        return res.success({ data: { ...response.data, token: token } });
       }
 
       return res.failure({ msg: response.err });

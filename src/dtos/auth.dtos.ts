@@ -8,7 +8,7 @@ export const userSignInSchemaZ = z.object({
 
 export const userSignUpSchemaZ = z.object({
   name: z.string(),
-  phone: zValidateMobileNo,
+  phone: zValidateMobileNo.optional(),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });

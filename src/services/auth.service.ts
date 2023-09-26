@@ -1,5 +1,6 @@
 import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
+import { UserConstant } from '@constants';
 
 import { config } from '@utils/config.utils';
 
@@ -15,9 +16,15 @@ class AuthService {
   private usersRepository = new UserRepository();
   private userService = new UserService();
 
-  public async signup(userData: ISignUpUser): Promise<IServiceResponse> {
+  public async signup(userData: ISignUpUser): Promise<IServiceResponse<ISignInResponse>> {
     try {
-      return await this.userService.createUser(userData);
+      const response = await this.userService.createUser(userData);
+
+      if (!response.ok) {
+        return response;
+      }
+
+      return await this.signIn(userData);
     } catch (error) {
       throw error;
     }
@@ -78,13 +85,13 @@ class AuthService {
   public createToken(userId): TokenData {
     const dataStoredInToken: DataStoredInToken = { _id: userId };
     const secretKey: string = config.internalAccessToken;
-    const expiresIn: number = 24 * 60 * 60;
+    const expiresIn: number = UserConstant.JWT.expireIn.week;
 
     return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
   }
 
   public createCookie(tokenData: TokenData): string {
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+    return `Authorization=${tokenData.token}`;
   }
 }
 
